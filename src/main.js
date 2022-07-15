@@ -4,8 +4,8 @@ import router from './router'
 import store from './store'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import request from './request.js'
-import './mock'
+import request from './request/request.js'
+import './mock/mock'
 
 const app = createApp(App)
 app.config.globalProperties.$request = request

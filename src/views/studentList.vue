@@ -1,22 +1,19 @@
 <template>
   <div class="home">
-    <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
     <div>
       <el-button type="primary" @click="toAdd()">新增学生</el-button>
     </div>
     <el-table :data="tableData" style="width: 100%" >
       <el-table-column fixed prop="name" label="学生姓名" width="150" />
       <el-table-column prop="count" label="学生年龄" width="auto" />
-      <el-table-column fixed="right" label="Operations" width="200" type="index" index="2">
+      <el-table-column fixed="right" label="操作" width="200" type="index">
         <template #default="scope">
           <el-button type="primary" size="small" @click="edit(scope)"
             >修改</el-button
           >
-          <!-- <el-button link type="primary" size="small" @click="remove">删除</el-button> -->
-          <el-popconfirm title="确定要删除这个班级吗?" confirm-button-text="确定" cancel-button-text="取消" @confirm="sureClear(scope.$index)">
+          <el-popconfirm title="确定要删除这个学生吗?" confirm-button-text="确定" cancel-button-text="取消" @confirm="sureClear(scope.$index)">
     <template #reference>
-      <el-button>删除</el-button>
+      <el-button size="small">删除</el-button>
     </template>
   </el-popconfirm>
         </template>
@@ -24,9 +21,9 @@
     </el-table>
     <el-dialog
       v-model="dialogVisible"
-      title="新增学生"
+      :title="actionItem[action]"
       width="30%"
-      :before-close="handleClose"
+      @closed="handleClose"
     >
       <el-form :model="form" label-width="120px">
     <el-form-item label="学生姓名">
@@ -59,72 +56,67 @@ export default {
   },
   data(){
     return {
-      tableData:[
-        {
-          name: '1班',
-          count:9
-        },
-        {
-          name: '2班',
-          count:9
-        }
-      ],
+      tableData:[],
       dialogVisible:false,
       form:{
         name:'',
         count:''
       },
-      action: 0
+      action: 0,
+      actionItem:['新增学生','修改学生']
     }
   },
   created(){
-    console.log("$request",this.$request)
     this.getData()
   },
   methods:{
     getData(){
       var url = '/studentList';
       var params = {};
-      this.$request.get(url,params).then(res=>{
-        console.log('res',res)
+      this.$request.post(url,params).then(res=>{
         this.tableData = res.list
       })
     },
+    handleClose(){
+      this.form.name = ''
+      this.form.count = ''
+    },
     toAdd(){
-      // this.$router.push({name:"classAdd",params:{id:0}})
-      // this.$message({
-      //   message:'333',
-      //   duration:0
-      // })
       this.action = 0
       this.dialogVisible = true
     },
     sureAdd(){
-      this.dialogVisible = false;
       if(this.action == 0){
-        this.tableData.push({name:this.form.name,count:this.form.count});
+        var url = '/studentAdd';
+        var params = {name:this.form.name,count:this.form.count};
+        this.$request.post(url,params).then(res=>{
+          this.tableData = res.list
+          this.dialogVisible = false
+        })
       }else if(this.action == 1){
-        this.tableData[this.index].name = this.form.name
-        this.tableData[this.index].count = this.form.count
+        var url = '/studentEdit';
+        var params = {info:{name:this.form.name,count:this.form.count},index:this.index};
+        this.$request.post(url,params).then(res=>{
+          this.tableData = res.list
+          this.dialogVisible = false
+        })
       }
-      this.form.name = ''
-        this.form.count = ''
       
     },
     edit(info){
       this.action = 1
-      console.log("info",info)
       this.form.name = info.row.name
       this.form.count = info.row.count
       this.index = info.$index
       this.dialogVisible = true
     },
-    remove(){
-
-    },
     sureClear( index ){
-      console.log("index",index )
       this.tableData.splice(index,1)
+      var url = '/studentClear';
+      var params = {index:index};
+      this.$request.post(url,params).then(res=>{
+        this.tableData = res.list
+      })
     },
   }
 }
