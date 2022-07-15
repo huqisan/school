@@ -48,7 +48,7 @@ axios.interceptors.response.use(
         //     duration:2000
         //   })
         break
-        // 404请求不存在
+      // 404请求不存在
       case 404:
         // this.$message({
         //     message:'网络请求不存在',
@@ -56,10 +56,10 @@ axios.interceptors.response.use(
         //   })
         break
       default:
-        // this.$message({
-        //     message:error.response.data.message,
-        //     duration:2000
-        //   })
+      // this.$message({
+      //     message:error.response.data.message,
+      //     duration:2000
+      //   })
     }
     return Promise.reject(error)
   }
@@ -69,41 +69,41 @@ axios.interceptors.response.use(
  * @param {String} url [请求的url地址]
  * @param {Object} params [请求时携带的参数]
  */
- function get(url, params = {}) {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(url, {
-          params: params
-        })
-        .then(res => {
-          resolve(res.data)
-        })
-        .catch(err => {
-          reject(err.data)
-        })
-    })
-  }
-  /**
-   * post方法，对应post请求
-   * @param {String} url [请求的url地址]
-   * @param {Object} params [请求时携带的参数]
-   */
-  function post(url, params={}) {
-    return new Promise((resolve, reject) => {
-      axios
-        // .post(url, qs.stringify(params))
-        .post(url, params)
-        .then(res => {
-          resolve(res.data)
-        })
-        .catch(err => {
-          reject(err.data)
-        })
-    })
-  }
-  
-  export default {
-    get,
-    post
-  }
-  
+function get(url, params = {}) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(url, {
+        params: params
+      })
+      .then(res => {
+        resolve(res.data)
+      })
+      .catch(err => {
+        reject(err.data)
+      })
+  })
+}
+/**
+ * post方法，对应post请求
+ * @param {String} url [请求的url地址]
+ * @param {Object} params [请求时携带的参数]
+ */
+function post(url, params = {}) {
+  return new Promise((resolve, reject) => {
+    axios
+      // .post(url, qs.stringify(params))
+      .post(url, params)
+      .then(res => {
+        resolve(res.data)
+      })
+      .catch(err => {
+        reject(err.data)
+      })
+  })
+}
+
+export default {
+  get,
+  post
+}
+
